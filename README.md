@@ -32,6 +32,7 @@ python -m pip install numpy music21 tensorflow
 python server.py
 ```
 Open http://localhost:8000
+live https://music-generation-using-lstm-43wx.onrender.com
 
 ## UI features
 - Manual seed chords (8x4)
