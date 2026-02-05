@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bach LSTM Composer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="background">
+    <div class="glow glow-one"></div>
+    <div class="glow glow-two"></div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">LSTM Music Lab</p>
+      <h1>Bach-style chorale generator</h1>
+      <p class="subtitle">Seed 8 chords, generate a full chorale, hear it, and download MIDI.</p>
+      <div class="hero-actions">
+        <button class="btn primary" id="generate-btn">Generate</button>
+        <button class="btn ghost" id="play-btn">Play</button>
+        <button class="btn ghost" id="stop-btn">Stop</button>
+        <button class="btn ghost" id="download-btn">Download MIDI</button>
+      </div>
+      <div id="status" class="status">Model status: checking...</div>
+    </div>
+    <div class="hero-card">
+      <h2>Model details</h2>
+      <ul>
+        <li>Conv1D + LSTM trained on Bach chorales</li>
+        <li>MIDI range 36-81, 0 for rests</li>
+        <li>Generates note-by-note, reassembled into chords</li>
+      </ul>
+      <div class="hero-foot">Tip: use a fixed sampling seed for repeatable output.</div>
+    </div>
+  </header>
+
+  <main class="main-grid">
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Seed chords</h2>
+        <p>Pick how to supply the first 8 chords (4 notes each).</p>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-seed="manual">Manual</button>
+        <button class="tab" data-seed="random">Random</button>
+        <button class="tab" data-seed="csv">CSV</button>
+      </div>
+
+      <div class="tab-panel active" data-panel="manual">
+        <div class="seed-grid" id="seed-grid"></div>
+        <div class="hint">Use MIDI note numbers. 0 = rest.</div>
+      </div>
+
+      <div class="tab-panel" data-panel="random">
+        <div class="form-row">
+          <label>
+            Random seed
+            <input id="random-seed" type="number" placeholder="optional" />
+          </label>
+          <label>
+            Rest probability
+            <input id="rest-prob" type="range" min="0" max="0.6" step="0.05" value="0.2" />
+          </label>
+        </div>
+        <div class="hint" id="rest-prob-value">Rest probability: 0.20</div>
+      </div>
+
+      <div class="tab-panel" data-panel="csv">
+        <input type="file" id="csv-file" accept=".csv,text/csv" />
+        <div class="hint" id="csv-status">Upload a chorale CSV to use the first 8 chords.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <h2>Generation</h2>
+        <p>Control length, tempo, and sampling seed.</p>
+      </div>
+      <div class="form-row">
+        <label>
+          Generate chords
+          <input id="gen-length" type="number" min="8" max="128" value="56" />
+        </label>
+        <label>
+          Tempo (BPM)
+          <input id="tempo" type="number" min="40" max="180" value="90" />
+        </label>
+        <label>
+          Sampling seed
+          <input id="sampling-seed" type="number" placeholder="optional" />
+        </label>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Total chords</div>
+          <div class="stat-value" id="stat-chords">--</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Note range</div>
+          <div class="stat-value" id="stat-range">--</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Rests</div>
+          <div class="stat-value" id="stat-rests">--</div>
+        </div>
+      </div>
+
+      <div class="panel-header">
+        <h2>Piano roll</h2>
+        <p>Seed portion highlighted.</p>
+      </div>
+      <div class="piano-roll">
+        <canvas id="piano-canvas" width="860" height="260"></canvas>
+      </div>
+    </section>
+
+    <section class="panel output-panel">
+      <div class="panel-header">
+        <h2>Generated notes</h2>
+        <p>Each row is a chord of 4 notes.</p>
+      </div>
+      <div id="notes-table" class="notes-table"></div>
+      <button class="btn ghost small" id="toggle-notes">Show all</button>
+    </section>
+  </main>
+
+
+  <footer class="footer">
+    <div>Made by Anurag Singh.</div>
+    <div class="footer-links">
+      <a href="https://github.com/anurag-m1" target="_blank" rel="noreferrer">GitHub</a>
+      <a href="https://instagram.com/ca_anuragsingh" target="_blank" rel="noreferrer">Instagram</a>
+    </div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>
